@@ -101,6 +101,15 @@
             .style("text-anchor", "middle")
             .style("font-size", "14px")
             .text("CO2 (ppm)");
+
+         // Chart title
+        svg.append("text")  
+            .attr("x", width / 2)
+            .attr("y", -10)
+            .style("text-anchor", "middle")
+            .style("font-size", "16px")
+            .style("font-weight", "bold")
+            .text("CO2 Levels Over Time");
       }
 
     // Fetch JSON data dynamically
