@@ -95,16 +95,43 @@
             .attr("transform", "translate(0," + height + ")")
             .call(xAxis);  // Add x-axis at the bottom
 
+        // Append y-axis for CO2
         svg.append("g")
-            .call(yAxis);  // Add y-axis on the left
+            .call(yAxisCO2);
 
-        // Append the line to the SVG and bind the data
+        // Append y-axis for temperature (right side)
+        svg.append("g")
+            .attr("transform", "translate(" + width + " ,0)")
+            .call(yAxisTemp);
+
+        // Append y-axis for methane (right side)
+        svg.append("g")
+            .attr("transform", "translate(" + (width + 40) + " ,0)")
+            .call(yAxisMethane);
+
+        // Append the CO2 line
         svg.append("path")
-            .data([data])  
-            .attr("fill", "none")  
-            .attr("stroke", "red")  
-            .attr("stroke-width", 2)  
-            .attr("d", line);  
+            .data([data])
+            .attr("fill", "none")
+            .attr("stroke", "red")
+            .attr("stroke-width", 2)
+            .attr("d", lineCO2);
+
+        // Append the Temperature Anomaly line
+        svg.append("path")
+            .data([data])
+            .attr("fill", "none")
+            .attr("stroke", "blue")
+            .attr("stroke-width", 2)
+            .attr("d", lineTemp);
+
+        // Append the Methane line
+        svg.append("path")
+            .data([data])
+            .attr("fill", "none")
+            .attr("stroke", "green")
+            .attr("stroke-width", 2)
+            .attr("d", lineMethane); 
 
         // Add labels for the axis
         // x-axis label
