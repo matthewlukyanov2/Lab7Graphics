@@ -51,6 +51,15 @@
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+            // Create x and y scales
+        const x = d3.scaleLinear()
+            .domain([d3.min(data.year), d3.max(data.year)])  // Years
+            .range([0, width]);
+
+        const y = d3.scaleLinear()
+            .domain([d3.min(data.co2), d3.max(data.co2)])  // CO2 levels 
+            .range([height, 0]);
+
       }
 
     // Fetch JSON data dynamically
