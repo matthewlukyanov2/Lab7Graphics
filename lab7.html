@@ -31,7 +31,19 @@
     <h1>Matthew</h1>
     <!-- JavaScript Section -->
  <script type="text/javascript">
-    console.log("Page Loaded");
+    fetch('https://tinyurl.com/k4chnujx')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json(); 
+            })
+            .then(data => {
+                console.log("JSON Data Successfully Fetched:");          
+            })
+            .catch(error => {
+                console.error("Failed to fetch JSON:", error);
+            });
  </script>
  </body>
 </html>
