@@ -60,6 +60,15 @@
             .domain([d3.min(data.co2), d3.max(data.co2)])  // CO2 levels 
             .range([height, 0]);
 
+        // Create axis, 10 ticks for x and 6 for y 
+        const xAxis = d3.axisBottom(x).ticks(10); 
+        const yAxis = d3.axisLeft(y).ticks(6);  
+
+        // The line generator
+        const line = d3.line()
+            .x(d => x(d.year))  
+            .y(d => y(d.co2));  
+
       }
 
     // Fetch JSON data dynamically
