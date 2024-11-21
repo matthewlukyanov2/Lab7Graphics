@@ -175,7 +175,51 @@
             .style("text-anchor", "middle")
             .style("font-size", "16px")
             .style("font-weight", "bold")
-            .text("CO2 Levels Over Time");
+            .text("CO2, Temperature, and Methane Levels Over Time");
+      
+        // Add legends for each line
+        // Legend for CO2
+        svg.append("circle")
+            .attr("cx", width - 100)
+            .attr("cy", 20)
+            .attr("r", 6)
+            .style("fill", "red");
+
+        svg.append("text")
+            .attr("x", width - 90)
+            .attr("y", 20)
+            .style("text-anchor", "start")
+            .style("font-size", "14px")
+            .text("CO2 (ppm)");
+
+        // Legend for Temperature Anomaly
+        svg.append("circle")
+            .attr("cx", width - 100)
+            .attr("cy", 40)
+            .attr("r", 6)
+            .style("fill", "blue");
+
+        svg.append("text")
+            .attr("x", width - 90)
+            .attr("y", 40)
+            .style("text-anchor", "start")
+            .style("font-size", "14px")
+            .text("Temperature Anomaly (°C)");
+
+        // Legend for Methane
+        svg.append("circle")
+            .attr("cx", width - 100)
+            .attr("cy", 60)
+            .attr("r", 6)
+            .style("fill", "green");
+
+        svg.append("text")
+            .attr("x", width - 90)
+            .attr("y", 60)
+            .style("text-anchor", "start")
+            .style("font-size", "14px")
+            .text("Methane (ppb)");
+
       }
 
     // Fetch JSON data dynamically
