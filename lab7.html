@@ -12,232 +12,224 @@
  <meta charset="UTF-8">
  <!-- CSS Section -->
  <style type="text/css">
-    body {
+        body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f9;
         }
 
         h1 {
             text-align: center;
-            color: #4CAF50;
-            margin-top: 50px;
+            margin-top: 20px;
         }
 
- </style>
- </head>
- <body>
-    <h1>Matthew</h1>
+        svg {
+            width: 100%;
+            height: 500px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .axis text {
+            font-size: 14px;
+        }
+
+        .axis path,
+        .axis line {
+            fill: none;
+            shape-rendering: crispEdges;
+        }
+
+        .line {
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .co2-line {
+            stroke: red;
+        }
+
+        .temp-line {
+            stroke: blue;
+        }
+
+        .methane-line {
+            stroke: green;
+        }
+
+        .label {
+            font-size: 18px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <h1>Matthew - D3.js Demo</h1>
     <!-- JavaScript Section -->
- <script type="text/javascript">
-      // Function to plot the CO2 data
-      function plotCO2Data(data) {
+    <script type="text/javascript">      
+    // Function to plot the CO2 data
+    function plotCO2Data(validData) {
 
-       // Print out the first few values from the data to verify
-      console.log("Plotting the CO2 Data:", data);
+       // Setup SVG dimensions and margins
+       const margin = { top: 20, right: 50, bottom: 50, left: 80 };
+       const width = 1000 - margin.left - margin.right;
+       const height = 500 - margin.top - margin.bottom;
 
-        // Setup SVG size and margins
-        const svgWidth = 800, svgHeight = 400;
-        const margin = { top: 20, right: 30, bottom: 50, left: 50 };
-        const width = svgWidth - margin.left - margin.right;
-        const height = svgHeight - margin.top - margin.bottom;
+       // Setup the SVG element
+       const svg = d3.select('body').append('svg')
+        .attr('width', width + margin.left + margin.right)
+        .attr('height', height + margin.top + margin.bottom)
+        .append('g')
+        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-        // Create an SVG element and append it to the body
-        const svg = d3.select("body")
-            .append("svg")
-            .attr("width", svgWidth)
-            .attr("height", svgHeight)
-            .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+       // Setup scales
+       const x = d3.scaleLinear().range([0, width]);
+       const yCO2 = d3.scaleLinear().range([height, 0]);
+       const yTemp = d3.scaleLinear().range([height, 0]);
+       const yMethane = d3.scaleLinear().range([height, 0]);
 
-            // Check the structure of data to ensure it's an array of objects
-            console.log("Data Structure after processing:", data);
+       // Define the line generators
+       const lineCO2 = d3.line()
+       .x(d => x(d.years_before_2023))
+       .y(d => yCO2(d.co2_ppmv));
 
-            // Create x and y scales
-        const x = d3.scaleLinear()
-            .domain([d3.min(data, d => d.year), d3.max(data, d => d.year)])  // Years
-            .range([0, width]);
+       const lineTemp = d3.line()
+        .x(d => x(d.years_before_2023))
+        .y(d => yTemp(d.temp_anomaly));
 
-        const yCO2 = d3.scaleLinear()
-            .domain([d3.min(data, d => d.co2), d3.max(data, d => d.co2)])  // CO2 levels 
-            .range([height, 0]);
+       const lineMethane = d3.line()
+        .x(d => x(d.years_before_2023))
+        .y(d => yMethane(d.ch4_ppb));
 
-            const yTemp = d3.scaleLinear()
-            .domain([d3.min(data, d => d.temperature), d3.max(data, d => d.temperature)])  // Temperature anomaly
-            .range([height, 0]);
+        // Define the domains for the scales
+       x.domain(d3.extent(validData, d => d.years_before_2023));
+       yCO2.domain([0, d3.max(validData, d => d.co2_ppmv)]);
+       yTemp.domain([d3.min(validData, d => d.temp_anomaly), d3.max(validData, d => d.temp_anomaly)]);
+       yMethane.domain([0, d3.max(validData, d => d.ch4_ppb)]);
 
-        const yMethane = d3.scaleLinear()
-            .domain([d3.min(data, d => d.methane), d3.max(data, d => d.methane)])  // Methane levels
-            .range([height, 0]);
+       // Create the X and Y axes
+       const xAxis = d3.axisBottom(x).ticks(10);
+       const yAxisCO2 = d3.axisLeft(yCO2).ticks(6);
+       const yAxisTemp = d3.axisRight(yTemp).ticks(6);
+       const yAxisMethane = d3.axisRight(yMethane).ticks(6);
 
-        // Create axis, 10 ticks for x and 6 for y 
-        const xAxis = d3.axisBottom(x).ticks(10); 
-        const yAxisCO2 = d3.axisLeft(yCO2).ticks(6);  
-        const yAxisTemp = d3.axisRight(yTemp).ticks(6);
-        const yAxisMethane = d3.axisRight(yMethane).ticks(6);
+       // Append the X and Y axes
+       svg.append('g')
+        .attr('class', 'x axis')
+        .attr('transform', 'translate(0,' + height + ')')
+        .call(xAxis);
 
-        // The line generator
-        const lineCO2 = d3.line()
-            .x(d => x(d.year))  
-            .y(d => yCO2(d.co2));  
+       svg.append('g')
+        .attr('class', 'y axis')
+        .call(yAxisCO2);
 
-            const lineTemp = d3.line()
-            .x(d => x(d.year))
-            .y(d => yTemp(d.temperature));
+       svg.append('g')
+        .attr('class', 'y axis')
+        .attr('transform', 'translate(' + width + ' ,0)')
+        .call(yAxisTemp);
 
-        const lineMethane = d3.line()
-            .x(d => x(d.year))
-            .y(d => yMethane(d.methane));
+       svg.append('g')
+        .attr('class', 'y axis')
+        .attr('transform', 'translate(' + (width + 100) + ' ,0)')
+        .call(yAxisMethane);
 
-            // Append x and y axis to the SVG
-        svg.append("g")
-            .attr("transform", "translate(0," + height + ")")
-            .call(xAxis);  // Add x-axis at the bottom
+       // Append the CO2 line
+       svg.append('path')
+        .data([validData])
+        .attr('class', 'line co2-line')
+        .attr('d', lineCO2);
 
-        // Append y-axis for CO2
-        svg.append("g")
-            .call(yAxisCO2);
+       // Append the Temperature Anomaly line
+       svg.append('path')
+        .data([validData])
+        .attr('class', 'line temp-line')
+        .attr('d', lineTemp);
 
-        // Append y-axis for temperature (right side)
-        svg.append("g")
-            .attr("transform", "translate(" + width + " ,0)")
-            .call(yAxisTemp);
+       // Append the Methane line
+       svg.append('path')
+        .data([validData])
+        .attr('class', 'line methane-line')
+        .attr('d', lineMethane);
 
-        // Append y-axis for methane (right side)
-        svg.append("g")
-            .attr("transform", "translate(" + (width + 40) + " ,0)")
-            .call(yAxisMethane);
+       // Add X and Y axis labels
+       svg.append('text')
+        .attr('class', 'label')
+        .attr('transform', 'rotate(-90)')
+        .attr('y', -60)
+        .attr('x', -height / 2)
+        .style('text-anchor', 'middle')
+        .text('CO2 (ppm)');
 
-        // Append the CO2 line
-        svg.append("path")
-            .data([data])
-            .attr("fill", "none")
-            .attr("stroke", "red")
-            .attr("stroke-width", 2)
-            .attr("d", lineCO2);
+       svg.append('text')
+        .attr('class', 'label')
+        .attr('transform', 'translate(' + (width / 2) + ',' + (height + 40) + ')')
+        .style('text-anchor', 'middle')
+        .text('Years Before 2023');
 
-        // Append the Temperature Anomaly line
-        svg.append("path")
-            .data([data])
-            .attr("fill", "none")
-            .attr("stroke", "blue")
-            .attr("stroke-width", 2)
-            .attr("d", lineTemp);
+        // Add Legends
+         const legend = svg.append('g')
+         .attr('transform', 'translate(' + (width - 150) + ',20)'); // Positioning the legend
 
-        // Append the Methane line
-        svg.append("path")
-            .data([data])
-            .attr("fill", "none")
-            .attr("stroke", "green")
-            .attr("stroke-width", 2)
-            .attr("d", lineMethane); 
+        // CO2 Legend
+         legend.append('rect')
+         .attr('width', 20)
+         .attr('height', 20)
+         .attr('fill', 'red');
+         legend.append('text')
+         .attr('x', 30)
+         .attr('y', 10)
+         .attr('dy', '.35em')
+         .text('CO2 (ppm)')
+         .style('font-size', '14px');
 
-        // Add labels for the axis
-        // x-axis label
-        svg.append("text")  
-            .attr("transform", "translate(" + (width / 2) + " ," + (height + margin.top + 30) + ")")
-            .style("text-anchor", "middle")
-            .style("font-size", "14px")
-            .text("Years Ago");
+         // Temperature Legend
+         legend.append('rect')
+         .attr('width', 20)
+         .attr('height', 20)
+         .attr('y', 30)
+         .attr('fill', 'blue');
+         legend.append('text')
+         .attr('x', 30)
+         .attr('y', 40)
+         .attr('dy', '.35em')
+         .text('Temperature Anomaly (°C)')
+         .style('font-size', '14px');
 
-        // y-axis label for CO2
-        svg.append("text")
-            .attr("transform", "rotate(-90)")
-            .attr("y", 0 - margin.left + 20)
-            .attr("x", 0 - (height / 2))
-            .style("text-anchor", "middle")
-            .style("font-size", "14px")
-            .text("CO2 (ppm)");
+         // Methane Legend
+         legend.append('rect')
+         .attr('width', 20)
+         .attr('height', 20)
+         .attr('y', 60)
+         .attr('fill', 'green');
+         legend.append('text')
+         .attr('x', 30)
+         .attr('y', 70)
+         .attr('dy', '.35em')
+         .text('Methane (ppb)')
+         .style('font-size', '14px');
+    }
 
-        // y-axis label for Temperature Anomaly
-        svg.append("text")
-            .attr("transform", "rotate(-90)")
-            .attr("y", 0 - (width + 40) + 20)
-            .attr("x", 0 - (height / 2))
-            .style("text-anchor", "middle")
-            .style("font-size", "14px")
-            .text("Temperature Anomaly (°C)");
 
-        // y-axis label for Methane
-        svg.append("text")
-            .attr("transform", "rotate(-90)")
-            .attr("y", 0 - (width + 80) + 20)
-            .attr("x", 0 - (height / 2))
-            .style("text-anchor", "middle")
-            .style("font-size", "14px")
-            .text("Methane (ppb)");
-
-         // Chart title
-        svg.append("text")  
-            .attr("x", width / 2)
-            .attr("y", -10)
-            .style("text-anchor", "middle")
-            .style("font-size", "16px")
-            .style("font-weight", "bold")
-            .text("CO2, Temperature, and Methane Levels Over Time");
-      
-        // Add legends for each line
-        // Legend for CO2
-        svg.append("circle")
-            .attr("cx", width - 100)
-            .attr("cy", 20)
-            .attr("r", 6)
-            .style("fill", "red");
-
-        svg.append("text")
-            .attr("x", width - 90)
-            .attr("y", 20)
-            .style("text-anchor", "start")
-            .style("font-size", "14px")
-            .text("CO2 (ppm)");
-
-        // Legend for Temperature Anomaly
-        svg.append("circle")
-            .attr("cx", width - 100)
-            .attr("cy", 40)
-            .attr("r", 6)
-            .style("fill", "blue");
-
-        svg.append("text")
-            .attr("x", width - 90)
-            .attr("y", 40)
-            .style("text-anchor", "start")
-            .style("font-size", "14px")
-            .text("Temperature Anomaly (°C)");
-
-        // Legend for Methane
-        svg.append("circle")
-            .attr("cx", width - 100)
-            .attr("cy", 60)
-            .attr("r", 6)
-            .style("fill", "green");
-
-        svg.append("text")
-            .attr("x", width - 90)
-            .attr("y", 60)
-            .style("text-anchor", "start")
-            .style("font-size", "14px")
-            .text("Methane (ppb)");
-
-      }
-
-    // Fetch JSON data dynamically
-    fetch('https://tinyurl.com/k4chnujx')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json(); // Parse JSON data
-            })
+        // Fetch the data and log it to ensure it's loaded correctly
+        fetch('https://tinyurl.com/k4chnujx')
+            .then(response => response.json())
             .then(data => {
-                console.log("JSON Data Successfully Fetched:");
-                console.log(data); // Log the data to the console
-                plotCO2Data(data); // Call the function to plot the data after it's fetched
+                console.log("First item of the data:", data[0]);
+
+                // Filter the data to remove any invalid entries
+                const validData = data.filter(d => 
+                    d.years_before_2023 != null && d.co2_ppmv != null && d.temp_anomaly != null && d.ch4_ppb != null
+                );
+
+                console.log("First few valid data points:", validData.slice(0, 5));
+
+                // Plot the data
+                plotCO2Data(validData);
             })
-            .catch(error => {
-                console.error("Failed to fetch JSON:", error);
-            });
- </script>
- </body>
+            .catch(error => console.error('Error fetching the data:', error));
+
+    </script>
+
+</body>
+
 </html>
