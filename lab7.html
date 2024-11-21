@@ -63,6 +63,14 @@
             .domain([d3.min(data, d => d.co2), d3.max(data, d => d.co2)])  // CO2 levels 
             .range([height, 0]);
 
+            const yTemp = d3.scaleLinear()
+            .domain([d3.min(data, d => d.temperature), d3.max(data, d => d.temperature)])  // Temperature anomaly
+            .range([height, 0]);
+
+        const yMethane = d3.scaleLinear()
+            .domain([d3.min(data, d => d.methane), d3.max(data, d => d.methane)])  // Methane levels
+            .range([height, 0]);
+
         // Create axis, 10 ticks for x and 6 for y 
         const xAxis = d3.axisBottom(x).ticks(10); 
         const yAxis = d3.axisLeft(y).ticks(6);  
