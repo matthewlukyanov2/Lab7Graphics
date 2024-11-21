@@ -215,6 +215,11 @@
             .on('zoom', (event) => {
                 const newX = event.transform.rescaleX(x); 
                 xAxisElement.call(xAxis.scale(newX)); 
+
+                // Update all lines based on new scale
+                co2Path.attr('d', lineCO2.x(d => newX(d.years_before_2023)));
+                tempPath.attr('d', lineTemp.x(d => newX(d.years_before_2023)));
+                methanePath.attr('d', lineMethane.x(d => newX(d.years_before_2023)));
             });
 
         svg.call(zoom); // Attach zoom behavior to the SVG
