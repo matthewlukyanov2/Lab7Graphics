@@ -69,7 +69,7 @@
             .x(d => x(d.year))  
             .y(d => y(d.co2));  
 
-            // Append x and y axes to the SVG
+            // Append x and y axis to the SVG
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
             .call(xAxis);  // Add x-axis at the bottom
@@ -84,6 +84,23 @@
             .attr("stroke", "red")  
             .attr("stroke-width", 2)  
             .attr("d", line);  
+
+        // Add labels for the axis
+        // x-axis label
+        svg.append("text")  
+            .attr("transform", "translate(" + (width / 2) + " ," + (height + margin.top + 30) + ")")
+            .style("text-anchor", "middle")
+            .style("font-size", "14px")
+            .text("Years Ago");
+
+        // y-axis label
+        svg.append("text")  
+            .attr("transform", "rotate(-90)")
+            .attr("y", 0 - margin.left + 20)
+            .attr("x", 0 - (height / 2))
+            .style("text-anchor", "middle")
+            .style("font-size", "14px")
+            .text("CO2 (ppm)");
       }
 
     // Fetch JSON data dynamically
