@@ -59,7 +59,7 @@
             .domain([d3.min(data, d => d.year), d3.max(data, d => d.year)])  // Years
             .range([0, width]);
 
-        const y = d3.scaleLinear()
+        const yCO2 = d3.scaleLinear()
             .domain([d3.min(data, d => d.co2), d3.max(data, d => d.co2)])  // CO2 levels 
             .range([height, 0]);
 
@@ -73,12 +73,22 @@
 
         // Create axis, 10 ticks for x and 6 for y 
         const xAxis = d3.axisBottom(x).ticks(10); 
-        const yAxis = d3.axisLeft(y).ticks(6);  
+        const yAxisCO2 = d3.axisLeft(y).ticks(6);  
+        const yAxisTemp = d3.axisRight(yTemp).ticks(6);
+        const yAxisMethane = d3.axisRight(yMethane).ticks(6);
 
         // The line generator
-        const line = d3.line()
+        const lineCO2 = d3.line()
             .x(d => x(d.year))  
-            .y(d => y(d.co2));  
+            .y(d => yCO2(d.co2));  
+
+            const lineTemp = d3.line()
+            .x(d => x(d.year))
+            .y(d => yTemp(d.temperature));
+
+        const lineMethane = d3.line()
+            .x(d => x(d.year))
+            .y(d => yMethane(d.methane));
 
             // Append x and y axis to the SVG
         svg.append("g")
