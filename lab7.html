@@ -141,14 +141,32 @@
             .style("font-size", "14px")
             .text("Years Ago");
 
-        // y-axis label
-        svg.append("text")  
+        // y-axis label for CO2
+        svg.append("text")
             .attr("transform", "rotate(-90)")
             .attr("y", 0 - margin.left + 20)
             .attr("x", 0 - (height / 2))
             .style("text-anchor", "middle")
             .style("font-size", "14px")
             .text("CO2 (ppm)");
+
+        // y-axis label for Temperature Anomaly
+        svg.append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 0 - (width + 40) + 20)
+            .attr("x", 0 - (height / 2))
+            .style("text-anchor", "middle")
+            .style("font-size", "14px")
+            .text("Temperature Anomaly (°C)");
+
+        // y-axis label for Methane
+        svg.append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 0 - (width + 80) + 20)
+            .attr("x", 0 - (height / 2))
+            .style("text-anchor", "middle")
+            .style("font-size", "14px")
+            .text("Methane (ppb)");
 
          // Chart title
         svg.append("text")  
