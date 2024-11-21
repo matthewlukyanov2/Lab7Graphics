@@ -31,15 +31,17 @@
     <h1>Matthew</h1>
     <!-- JavaScript Section -->
  <script type="text/javascript">
+    // Fetch JSON data dynamically
     fetch('https://tinyurl.com/k4chnujx')
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
-                return response.json(); 
+                return response.json(); // Parse JSON data
             })
             .then(data => {
-                console.log("JSON Data Successfully Fetched:");          
+                console.log("JSON Data Successfully Fetched:");
+                console.log(data); // Log the data to the console
             })
             .catch(error => {
                 console.error("Failed to fetch JSON:", error);
