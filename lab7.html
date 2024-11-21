@@ -51,13 +51,16 @@
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+            // Check the structure of data to ensure it's an array of objects
+            console.log("Data Structure after processing:", data);
+
             // Create x and y scales
         const x = d3.scaleLinear()
-            .domain([d3.min(data.year), d3.max(data.year)])  // Years
+            .domain([d3.min(data, d => d.year), d3.max(data, d => d.year)])  // Years
             .range([0, width]);
 
         const y = d3.scaleLinear()
-            .domain([d3.min(data.co2), d3.max(data.co2)])  // CO2 levels 
+            .domain([d3.min(data, d => d.co2), d3.max(data, d => d.co2)])  // CO2 levels 
             .range([height, 0]);
 
         // Create axis, 10 ticks for x and 6 for y 
@@ -123,6 +126,7 @@
             .then(data => {
                 console.log("JSON Data Successfully Fetched:");
                 console.log(data); // Log the data to the console
+                plotCO2Data(data); // Call the function to plot the data after it's fetched
             })
             .catch(error => {
                 console.error("Failed to fetch JSON:", error);
